@@ -1,6 +1,7 @@
 # CarbonIQ
 
-CarbonIQ is a FastAPI-based web API project that uses MongoDB as its primary data store. This document provides a comprehensive overview of the project, including its structure, setup, Docker usage, and API examples.
+carbonIQ is a school-mandated, paperless environmental management platform that combines waste-collection reporting, geospatial mapping, and climate-data overlays to reduce pollution, improve waste collection, and inform resiliency planning. Students and staff identify waste hotspots via an intuitive map UI; reported items (waste type, photo, timestamps) are stored in a central DB and routed to waste management operations by schools or licensed parties.
+The platform also replaces paper workflows (enrolment, finance, and exams) and brings AI-powered marking and analytics so the institution both reduces paper waste and uses students as distributed data collectors.
 
 ## Features
 
@@ -28,7 +29,7 @@ CarbonIQ is a FastAPI-based web API project that uses MongoDB as its primary dat
 
 1. **Clone the repository**
     ```bash
-    git clone <repo-url>
+    git clone https://github.com/njange/CarbonIQ
     cd CarbonIQ
     ```
 
