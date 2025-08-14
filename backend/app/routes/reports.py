@@ -6,6 +6,7 @@ from bson import ObjectId
 from app.db.mongo import get_db
 from app.models.reports import ReportCreate, ReportPublic
 from app.deps import get_current_user
+from app.services.rewards import RewardsService
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 STORAGE_DIR = Path("storage/images")
@@ -69,9 +70,19 @@ async def create_report(payload: ReportCreate, db = Depends(get_db), user = Depe
     })
     res = await db.reports.insert_one(doc)
     saved = await db.reports.find_one({"_id": res.inserted_id})
+    
+    # Process rewards for this report
+    try:
+        rewards_service = RewardsService(db)
+        rewards = await rewards_service.process_report_rewards(saved, user["email"])
+        # Optionally log rewards or add to response
+    except Exception as e:
+        # Don't fail report creation if rewards fail
+        print(f"Failed to process rewards: {e}")
+    
     return saved
 
-@router.post("reports/with-image", response_model=ReportPublic)
+@router.post("/with-image", response_model=ReportPublic)
 async def create_report_with_image(
     student_id: str = Form(...),
     waste_type: str = Form(...),
@@ -159,6 +170,16 @@ async def create_report_with_image(
     # Insert into database
     res = await db.reports.insert_one(doc)
     saved = await db.reports.find_one({"_id": res.inserted_id})
+    
+    # Process rewards for this report
+    try:
+        rewards_service = RewardsService(db)
+        rewards = await rewards_service.process_report_rewards(saved, user["email"])
+        # Optionally log rewards or add to response
+    except Exception as e:
+        # Don't fail report creation if rewards fail
+        print(f"Failed to process rewards: {e}")
+    
     return saved
 
 @router.get("/near", response_model=list[ReportPublic])

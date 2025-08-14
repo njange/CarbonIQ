@@ -17,8 +17,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
-async def require_role(*roles: str):
-    async def _inner(user = Depends(get_current_user)):
+def require_role(*roles: str):
+    def _inner(user = Depends(get_current_user)):
         if user.get("role") not in roles:
             raise HTTPException(status_code=403, detail="Insufficient permissions")
         return user
