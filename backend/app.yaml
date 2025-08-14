@@ -1,0 +1,36 @@
+# Google App Engine configuration for CarbonIQ API
+runtime: python39
+service: default
+
+# Environment variables
+env_variables:
+  MONGODB_URI: "mongodb://root:changeme@localhost:27017/?authSource=admin"
+  JWT_SECRET: "your-super-secret-jwt-key-change-this-in-production"
+  MONGODB_DB: "carboniq"
+  JWT_ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "120"
+
+# Resource settings
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+  target_cpu_utilization: 0.6
+
+# Health check
+readiness_check:
+  path: "/docs"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/docs"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# Network settings
+network:
+  instance_tag: carboniq-api
