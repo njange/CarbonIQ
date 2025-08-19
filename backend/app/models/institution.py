@@ -8,7 +8,7 @@ class InstitutionCreate(BaseModel):
     location: GeoPoint
 
 class InstitutionPublic(BaseModel):
-    id: str = Field(alias="_id")
+    # id: str = Field(alias="_id")
     name: str
     kind: str
     location: GeoPoint
