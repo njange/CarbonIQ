@@ -11,7 +11,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://carbon-iq.netlify.app"
+        "https://carboniq254.netlify.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
