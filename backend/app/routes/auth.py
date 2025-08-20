@@ -27,7 +27,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db = Depends(g
     if not user or not verify_password(form_data.password, user.get("password_hash", "")):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     token = create_access_token(subject=user["email"])
-    logging.info(f"role {user["role"]}")
     return {
         "access_token": token,
         "token_type": "bearer",
