@@ -35,4 +35,5 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db = Depends(g
 
 @router.get("/ping")
 async def ping():
+    print("New route")
     return {"msg": "NEW VERSION 123 🚀"}

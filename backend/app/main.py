@@ -4,8 +4,14 @@ from fastapi.staticfiles import StaticFiles
 from app.code.config import settings
 from app.db.mongo import get_db
 from app.routes import auth, reports, institutions, rewards
+from contextlib import asynccontextmanager
 
-app = FastAPI(title=settings.APP_NAME)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("App started, now ✅")
+    yield
+    print("App shutting down 🛑")
+app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

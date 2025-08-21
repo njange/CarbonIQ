@@ -22,7 +22,7 @@ CollectionMethod = Literal[
 ]
 
 class ReportCreate(BaseModel):
-    student_id: str
+    # student_id: str
     nearest_institution_id: Optional[str] = None
     image_url: Optional[str] = None
     timestamp: datetime = Field(default_factory=datetime.utcnow)

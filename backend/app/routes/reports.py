@@ -57,6 +57,7 @@ async def upload_image(file: UploadFile = File(...), user = Depends(get_current_
 
 @router.post("/", response_model=ReportPublic)
 async def create_report(payload: ReportCreate, db = Depends(get_db), user = Depends(get_current_user)):
+
     """
     Create a new waste report.
     
@@ -70,7 +71,8 @@ async def create_report(payload: ReportCreate, db = Depends(get_db), user = Depe
     })
     res = await db.reports.insert_one(doc)
     saved = await db.reports.find_one({"_id": res.inserted_id})
-    
+    if saved:
+        saved["_id"] = str(saved["_id"])
     # Process rewards for this report
     try:
         rewards_service = RewardsService(db)
@@ -79,7 +81,7 @@ async def create_report(payload: ReportCreate, db = Depends(get_db), user = Depe
     except Exception as e:
         # Don't fail report creation if rewards fail
         print(f"Failed to process rewards: {e}")
-    
+
     return saved
 
 @router.post("/with-image", response_model=ReportPublic)
@@ -271,6 +273,9 @@ async def get_report(report_id: str, db = Depends(get_db)):
         report = await db.reports.find_one({"_id": ObjectId(report_id)})
         if not report:
             raise HTTPException(status_code=404, detail="Report not found")
+
+        if report:
+            report["_id"] = str(report["_id"])
         return report
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid report ID")
@@ -283,6 +288,7 @@ async def list_reports(
     status: Optional[str] = None,
     db = Depends(get_db)
 ):
+    print("New route")
     """
     List all reports with optional filtering.
     """
@@ -291,6 +297,13 @@ async def list_reports(
         query["waste_type"] = waste_type
     if status:
         query["status"] = status
-    
+
     cursor = db.reports.find(query).skip(skip).limit(limit).sort("timestamp", -1)
-    return [d async for d in cursor]
+
+    # Convert to list and stringify _id
+    reports = []
+    async for doc in cursor:
+        doc["_id"] = str(doc["_id"])  # convert ObjectId to string
+        reports.append(doc)
+    return reports
+    # return [d async for d in reports]
